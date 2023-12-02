@@ -4,12 +4,14 @@ import ProyectoPOO.Main.BL.entities.*;
 import ProyectoPOO.Main.BL.logic.*;
 import ProyectoPOO.Main.Memory.*;
 import ProyectoPOO.Main.UI.UI;
+import ProyectoPOO.Main.Utils.Utils;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ProyectoPOO.Utils.Utils.generateRandomCode;
+import static ProyectoPOO.Main.Utils.Utils.*;
 
 
 public class Controller {
@@ -84,7 +86,7 @@ public class Controller {
             interfaz.printText("Ingrese el nombre del administrador:");
             String name = interfaz.readText();
 
-            if (ProyectoPOO.Utils.Utils.containsNumbers(name)) {
+            if (Utils.containsNumbers(name)) {
                 interfaz.printText("Error: El nombre no debe contener números. Por favor, inténtelo de nuevo.");
                 return;
             }
@@ -92,7 +94,7 @@ public class Controller {
             interfaz.printText("Ingrese el apellido del administrador:");
             String lastName = interfaz.readText();
 
-            if (ProyectoPOO.Utils.Utils.containsNumbers(lastName)) {
+            if (Utils.containsNumbers(lastName)) {
                 interfaz.printText("Error: El apellido no debe contener números. Por favor, inténtelo de nuevo.");
                 return;
             }
@@ -122,7 +124,7 @@ public class Controller {
                 interfaz.printText("Ingrese el nombre del cliente:");
                 String name = interfaz.readText();
 
-                if (ProyectoPOO.Utils.Utils.containsNumbers(name)) {
+                if (Utils.containsNumbers(name)) {
                     interfaz.printText("Error: El nombre no debe contener números. Por favor, inténtelo de nuevo.");
                     return;
                 }
@@ -130,14 +132,14 @@ public class Controller {
                 interfaz.printText("Ingrese el apellido del cliente:");
                 String lastName = interfaz.readText();
 
-                if (ProyectoPOO.Utils.Utils.containsNumbers(lastName)) {
+                if (Utils.containsNumbers(lastName)) {
                     interfaz.printText("Error: El apellido no debe contener números. Por favor, inténtelo de nuevo.");
                     return;
                 }
 
                 interfaz.printText("Ingrese el correo electrónico del cliente:");
                 String email = interfaz.readText();
-                if (!ProyectoPOO.Utils.Utils.isValidEmail(email)) {
+                if (!Utils.isValidEmail(email)) {
                     interfaz.printText("Error: El correo electrónico no tiene un formato válido. Por favor, inténtelo de nuevo.");
                     return;
                 }

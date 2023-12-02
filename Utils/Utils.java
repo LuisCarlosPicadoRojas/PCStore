@@ -1,4 +1,4 @@
-package ProyectoPOO.Utils;
+package ProyectoPOO.Main.Utils;
 
 import java.util.Random;
 import java.util.regex.Matcher;

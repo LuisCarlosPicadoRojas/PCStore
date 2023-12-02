@@ -1,6 +1,6 @@
-package ProyectoPOO.Memory;
+package ProyectoPOO.Main.Memory;
 
-import ProyectoPOO.BL.entities.Client;
+import ProyectoPOO.Main.BL.entities.Client;
 
 import java.sql.Connection;
 import java.sql.Connection;

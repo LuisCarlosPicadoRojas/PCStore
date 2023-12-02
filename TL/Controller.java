@@ -3,8 +3,7 @@ package ProyectoPOO.Main.TL;
 import ProyectoPOO.Main.BL.entities.*;
 import ProyectoPOO.Main.BL.logic.*;
 import ProyectoPOO.Main.Memory.*;
-import ProyectoPOO.UI.UI;
-
+import ProyectoPOO.Main.UI.UI;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +20,8 @@ public class Controller {
     private static famillyGestor famillyGestor;
     private static expecificFamillyGestor expecificFamillyGestor;
     private static Connection connection;
+    private static clientGestor clientGestor;
+    private static adminGestor adminGestor;
 
 
     public Controller() throws SQLException {
@@ -31,8 +32,192 @@ public class Controller {
         storageGestor = new storageGestor(new DAOStorage(connection));
         famillyGestor = new famillyGestor(new DAOFamilly(connection));
         expecificFamillyGestor = new expecificFamillyGestor(new DAOExpecificFamilly(connection));
+        clientGestor = new clientGestor(new DAOClient(connection));
+        adminGestor = new adminGestor(new DAOAdministrator(connection));
     }
     public void start() throws Exception{
+        String loggedIn = null;
+
+        while (true) {
+            try {
+                while (loggedIn == null) {
+                    interfaz.menuLogin();
+                    int option = interfaz.optionReader();
+
+                    switch (option) {
+                        case 1:
+                            loggedIn = login();
+                            break;
+
+                        case 2:
+                            NewClient(interfaz);
+                            break;
+
+                        case 3:
+                            interfaz.printText("Hasta luego.");
+                            return;
+
+                        default:
+                            interfaz.printText("Opción no válida.");
+                            break;
+                    }
+                }
+                if (loggedIn.equals("a")){
+                    MainMenuAdmin(interfaz);
+                    loggedIn = null;
+                }else if (loggedIn.equals("c")){
+                    MainMenuClient(interfaz);
+                    loggedIn = null;
+                }
+            } catch (Exception e) {
+                interfaz.printText("Se produjo un error. Por favor, inténtelo de nuevo.");
+            }
+        }
+    }
+    private static void NewAdministrator(UI interfaz) {
+        try {
+            interfaz.printText("Ingrese el ID del administrador:");
+            int ID = Integer.parseInt(interfaz.readText());
+
+            interfaz.printText("Ingrese el nombre del administrador:");
+            String name = interfaz.readText();
+
+            if (ProyectoPOO.Utils.Utils.containsNumbers(name)) {
+                interfaz.printText("Error: El nombre no debe contener números. Por favor, inténtelo de nuevo.");
+                return;
+            }
+
+            interfaz.printText("Ingrese el apellido del administrador:");
+            String lastName = interfaz.readText();
+
+            if (ProyectoPOO.Utils.Utils.containsNumbers(lastName)) {
+                interfaz.printText("Error: El apellido no debe contener números. Por favor, inténtelo de nuevo.");
+                return;
+            }
+
+            interfaz.printText("Ingrese el nombre de usuario del administrador:");
+            String username = interfaz.readText();
+
+            interfaz.printText("Ingrese la contraseña del administrador:");
+            String password = interfaz.readText();
+
+
+
+            adminGestor.registerAdmin(new Administrator(ID, name, lastName, username, password));
+            interfaz.printText("Administrador registrado con éxito.");
+
+        } catch (Exception ex) {
+            interfaz.printText("Ha ocurrido un error. Intente nuevamente.");
+        }
+    }
+    private static void NewClient(UI interfaz) {
+        try {
+            interfaz.printText("Ingrese el ID del cliente:");
+            int ID = Integer.parseInt(interfaz.readText());
+
+            interfaz.printText("Ingrese el nombre del cliente:");
+            String name = interfaz.readText();
+
+            if (ProyectoPOO.Utils.Utils.containsNumbers(name)) {
+                interfaz.printText("Error: El nombre no debe contener números. Por favor, inténtelo de nuevo.");
+                return;
+            }
+
+            interfaz.printText("Ingrese el apellido del cliente:");
+            String lastName = interfaz.readText();
+
+            if (ProyectoPOO.Utils.Utils.containsNumbers(lastName)) {
+                interfaz.printText("Error: El apellido no debe contener números. Por favor, inténtelo de nuevo.");
+                return;
+            }
+
+            interfaz.printText("Ingrese el correo electrónico del cliente:");
+            String email = interfaz.readText();
+            if (!ProyectoPOO.Utils.Utils.isValidEmail(email)) {
+                interfaz.printText("Error: El correo electrónico no tiene un formato válido. Por favor, inténtelo de nuevo.");
+                return;
+            }
+            interfaz.printText("Ingrese el número de teléfono del cliente:");
+            String phoneNumber = interfaz.readText();
+
+            interfaz.printText("Ingrese el nombre de usuario del cliente:");
+            String username = interfaz.readText();
+
+            interfaz.printText("Ingrese la contraseña del cliente:");
+            String password = interfaz.readText();
+
+            boolean clientExists = clientGestor.checkClientExist(ID);
+
+            if (clientExists) {
+                interfaz.printText("El cliente ya existe. Ingrese un ID único.");
+            } else {
+                clientGestor.registerClient(new Client(ID, name, lastName, email, phoneNumber, username, password));
+                interfaz.printText("Cliente registrado con éxito.");
+            }
+        } catch (Exception ex) {
+            interfaz.printText("Ha ocurrido un error. Intente nuevamente.");
+        }
+    }
+    private String login() throws Exception {
+        interfaz.printText("Ingrese su nombre de usuario:");
+        String username = interfaz.readText();
+
+        interfaz.printText("Ingrese su contraseña:");
+        String password = interfaz.readText();
+
+        try {
+            String loggedInClient = clientGestor.login(username, password);
+            String loggedInAdmin = adminGestor.login(username, password);
+
+            if ("c".equals(loggedInClient)) {
+                interfaz.printText("Inicio de sesión como cliente exitoso. ¡Bienvenido!");
+                return "c";
+            } else if ("a".equals(loggedInAdmin)) {
+                interfaz.printText("Inicio de sesión como administrador exitoso. ¡Bienvenido!");
+                return "a";
+            } else {
+                interfaz.printText("Nombre de usuario o contraseña incorrectos. Inténtelo nuevamente.");
+            }
+        } catch (SQLException e) {
+            interfaz.printText("Se produjo un error al intentar iniciar sesión. Intente nuevamente más tarde.");
+        } catch (Exception e) {
+            interfaz.printText("Se produjo un error. Inténtelo nuevamente.");
+        }
+        return null;
+    }
+    private static void MainMenuClient(UI interfaz) {
+        boolean showMenu = true;
+
+        while (showMenu) {
+            try {
+                int registroOption = 0;
+                interfaz.menuClient();
+
+                registroOption = interfaz.optionReader();
+
+                switch (registroOption) {
+                    case 1:
+                        showFamily(interfaz);
+                        break;
+
+                    case 2:
+                        showProduct(interfaz);
+                        break;
+
+                    case 3:
+                        interfaz.printText("Hasta luego.");
+                        return;
+
+                    default:
+                        interfaz.printText("Opción no válida.");
+                        break;
+                }
+            } catch (Exception e) {
+                interfaz.printText("Se produjo un error. Por favor, inténtelo de nuevo.");
+            }
+        }
+    }
+    private static void MainMenuAdmin(UI interfaz) {
         boolean showMenu = true;
 
         while (showMenu) {
@@ -64,8 +249,7 @@ public class Controller {
 
                     case 6:
                         interfaz.printText("Hasta luego.");
-                        showMenu = false;
-                        break;
+                        return;
 
                     default:
                         interfaz.printText("Opción no válida.");
@@ -75,7 +259,6 @@ public class Controller {
                 interfaz.printText("Se produjo un error. Por favor, inténtelo de nuevo.");
             }
         }
-
     }
     private static void NewProduct(UI interfaz) throws Exception {
         try {

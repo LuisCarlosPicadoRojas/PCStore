@@ -1,6 +1,6 @@
-package ProyectoPOO.BL.logic;
-import ProyectoPOO.BL.entities.Administrator;
-import ProyectoPOO.Memory.DAOAdministrator;
+package ProyectoPOO.Main.BL.logic;
+import ProyectoPOO.Main.BL.entities.Administrator;
+import ProyectoPOO.Main.Memory.DAOAdministrator;
 
 import java.sql.SQLException;
 

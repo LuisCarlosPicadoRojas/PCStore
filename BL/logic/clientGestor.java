@@ -1,7 +1,6 @@
-package ProyectoPOO.BL.logic;
-import ProyectoPOO.BL.entities.Client;
-import ProyectoPOO.Memory.DAOClient;
-import ProyectoPOO.Memory.DAOProduct;
+package ProyectoPOO.Main.BL.logic;
+import ProyectoPOO.Main.BL.entities.Client;
+import ProyectoPOO.Main.Memory.DAOClient;
 
 import java.sql.Connection;
 import java.sql.SQLException;

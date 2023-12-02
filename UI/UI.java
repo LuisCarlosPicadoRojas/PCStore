@@ -1,4 +1,4 @@
-package ProyectoPOO.UI;
+package ProyectoPOO.Main.UI;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -13,7 +13,21 @@ public class UI {
         System.out.println("3. Registrar una familia de computadoras.");
         System.out.println("4. Listar familias.");
         System.out.println("5. Agregar componentes permitidos a una familia.");
-        System.out.println("6. Salir.");
+        System.out.println("6. Cerrar sesion.");
+        System.out.println("\nIngrese una opcion");
+    }
+    public void menuClient() {
+        System.out.println("Seleccione una opción:");
+        System.out.println("1. Listar componentes.");
+        System.out.println("2. Listar familias.");
+        System.out.println("3. Cerrar sesion.");
+        System.out.println("\nIngrese una opcion");
+    }
+    public void menuLogin() {
+        System.out.println("Bienvenido a Round Rock Computers");
+        System.out.println("1. Iniciar sesion");
+        System.out.println("2. Crear cuenta.");
+        System.out.println("3. Salir.");
         System.out.println("\nIngrese una opcion");
     }
     public void menuComponents() {

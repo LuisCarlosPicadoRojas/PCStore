@@ -1,5 +1,5 @@
-package ProyectoPOO.Memory;
-import ProyectoPOO.BL.entities.Administrator;
+package ProyectoPOO.Main.Memory;
+import ProyectoPOO.Main.BL.entities.Administrator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

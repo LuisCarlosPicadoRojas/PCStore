@@ -1,13 +1,14 @@
-package ProyectoPOO.TL;
-import ProyectoPOO.BL.entities.*;
-import ProyectoPOO.Memory.*;
+package ProyectoPOO.Main.TL;
+
+import ProyectoPOO.Main.BL.entities.*;
+import ProyectoPOO.Main.BL.logic.*;
+import ProyectoPOO.Main.Memory.*;
 import ProyectoPOO.UI.UI;
-import ProyectoPOO.BL.logic.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import static ProyectoPOO.Utils.Utils.generateRandomCode;
 

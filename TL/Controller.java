@@ -256,8 +256,11 @@ public class Controller {
                     case 5:
                         addComponentToFamilly(interfaz);
                         break;
-
                     case 6:
+                        deleteComponent(interfaz);
+                        break;
+
+                    case 7:
                         interfaz.printText("Hasta luego.");
                         return;
 
@@ -691,6 +694,83 @@ public class Controller {
             return famillyList.get(selectedFamilyIndex).getTypeFamily();
         } else {
             return null;
+        }
+    }
+    private static void deleteComponent(UI interfaz) throws Exception {
+        interfaz.printText("Componentes disponibles:");
+        List<Product> productList = productGestor.showProduct();
+        List<Ram> ramList = ramGestor.showRam();
+        List<Storage> storageList = storageGestor.showStorage();
+
+        int count = 1;
+        if (!productList.isEmpty()) {
+            for (Product product : productList) {
+                interfaz.printText(count + ". " + product.getName());
+                count++;
+            }
+        }
+        if (!ramList.isEmpty()) {
+            for (Ram ram : ramList) {
+                interfaz.printText(count + ". " + ram.getName());
+                count++;
+            }
+        }
+        if (!storageList.isEmpty()) {
+            for (Storage storage : storageList) {
+                interfaz.printText(count + ". " + storage.getName());
+                count++;
+            }
+        }
+
+        interfaz.printText("Ingrese el número del componente a eliminar:");
+        int selectedComponentIndex = Integer.parseInt(interfaz.readText()) - 1;
+
+        boolean componentFound = false;
+        if (selectedComponentIndex < productList.size()) {
+            Product selectedProduct = productList.get(selectedComponentIndex);
+            try {
+                boolean deleted = productGestor.removeProduct(selectedProduct.getCode());
+                if (deleted) {
+                    interfaz.printText("Producto eliminado exitosamente.");
+                    componentFound = true;
+                } else {
+                    interfaz.printText("No se pudo eliminar el producto.");
+                }
+            } catch (Exception e) {
+                interfaz.printText("Error al eliminar el producto: " + e.getMessage());
+            }
+        }
+        else if (selectedComponentIndex < productList.size() + ramList.size()) {
+            Ram selectedRam = ramList.get(selectedComponentIndex - productList.size());
+            try {
+                boolean deleted = ramGestor.removeRam(selectedRam.getCode());
+                if (deleted) {
+                    interfaz.printText("RAM eliminada exitosamente.");
+                    componentFound = true;
+                } else {
+                    interfaz.printText("No se pudo eliminar la RAM.");
+                }
+            } catch (Exception e) {
+                interfaz.printText("Error al eliminar la RAM: " + e.getMessage());
+            }
+        }
+        else if (selectedComponentIndex < productList.size() + ramList.size() + storageList.size()) {
+            Storage selectedStorage = storageList.get(selectedComponentIndex - productList.size() - ramList.size());
+            try {
+                boolean deleted = storageGestor.removeStorage(selectedStorage.getCode());
+                if (deleted) {
+                    interfaz.printText("Almacenamiento eliminado exitosamente.");
+                    componentFound = true;
+                } else {
+                    interfaz.printText("No se pudo eliminar el almacenamiento.");
+                }
+            } catch (Exception e) {
+                interfaz.printText("Error al eliminar el almacenamiento: " + e.getMessage());
+            }
+        }
+
+        if (!componentFound) {
+            interfaz.printText("Selección inválida.");
         }
     }
 

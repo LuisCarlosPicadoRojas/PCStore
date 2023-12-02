@@ -61,5 +61,31 @@ public class DAOStorage {
         }
         return storages;
     }
+
+    public boolean removeStorage(int storageCode) throws SQLException {
+        try {
+            String deleteFamilyStorageSql = "DELETE FROM Family_Storage WHERE storage_id = ?";
+            try (PreparedStatement deleteFamilyStorageStatement = connection.prepareStatement(deleteFamilyStorageSql)) {
+                deleteFamilyStorageStatement.setInt(1, storageCode);
+                deleteFamilyStorageStatement.executeUpdate();
+            }
+
+            String deleteExpecificFamilyStorageSql = "DELETE FROM ExpecificFamily_Storage WHERE storage_id = ?";
+            try (PreparedStatement deleteExpecificFamilyStorageStatement = connection.prepareStatement(deleteExpecificFamilyStorageSql)) {
+                deleteExpecificFamilyStorageStatement.setInt(1, storageCode);
+                deleteExpecificFamilyStorageStatement.executeUpdate();
+            }
+
+            String deleteStorageSql = "DELETE FROM Storage WHERE code = ?";
+            try (PreparedStatement deleteStorageStatement = connection.prepareStatement(deleteStorageSql)) {
+                deleteStorageStatement.setInt(1, storageCode);
+                int rowsDeleted = deleteStorageStatement.executeUpdate();
+                return rowsDeleted > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }
 

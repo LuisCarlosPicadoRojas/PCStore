@@ -57,4 +57,28 @@ public class DAORam {
         }
         return rams;
     }
+
+    public boolean removeRam(int ramCode) throws SQLException {
+        try {
+            String deleteFamilyRamSql = "DELETE FROM Family_Ram WHERE ram_id = ?";
+            try (PreparedStatement deleteFamilyRamStatement = connection.prepareStatement(deleteFamilyRamSql)) {
+                deleteFamilyRamStatement.setInt(1, ramCode);
+                deleteFamilyRamStatement.executeUpdate();
+            }
+            String deleteExpecificFamilyRamSql = "DELETE FROM expecificfamily_ram WHERE ram_id = ?";
+            try (PreparedStatement deleteExpecificFamilyRamStatement = connection.prepareStatement(deleteExpecificFamilyRamSql)) {
+                deleteExpecificFamilyRamStatement.setInt(1, ramCode);
+                deleteExpecificFamilyRamStatement.executeUpdate();
+            }
+            String deleteRamSql = "DELETE FROM Ram WHERE code = ?";
+            try (PreparedStatement deleteRamStatement = connection.prepareStatement(deleteRamSql)) {
+                deleteRamStatement.setInt(1, ramCode);
+                int rowsDeleted = deleteRamStatement.executeUpdate();
+                return rowsDeleted > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

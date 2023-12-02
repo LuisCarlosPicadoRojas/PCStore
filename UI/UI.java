@@ -13,7 +13,8 @@ public class UI {
         System.out.println("3. Registrar una familia de computadoras.");
         System.out.println("4. Listar familias.");
         System.out.println("5. Agregar componentes permitidos a una familia.");
-        System.out.println("6. Cerrar sesion.");
+        System.out.println("6. Eliminar componentes.");
+        System.out.println("7. Cerrar sesion.");
         System.out.println("\nIngrese una opcion");
     }
     public void menuClient() {

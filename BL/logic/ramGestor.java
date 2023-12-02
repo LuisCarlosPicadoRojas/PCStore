@@ -21,4 +21,8 @@ public class ramGestor {
         return daoRam.getRamsFromDatabase();
     }
 
+    public boolean removeRam(int ramCode) throws SQLException {
+        return daoRam.removeRam(ramCode);
+    }
+
 }

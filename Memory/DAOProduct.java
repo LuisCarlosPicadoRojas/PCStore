@@ -55,4 +55,30 @@ public class DAOProduct {
         }
         return products;
     }
+
+    public boolean removeProduct(int productCode) throws SQLException {
+        try {
+            String deleteFamilyProductSql = "DELETE FROM Family_Product WHERE product_id = ?";
+            try (PreparedStatement deleteFamilyProductStatement = connection.prepareStatement(deleteFamilyProductSql)) {
+                deleteFamilyProductStatement.setInt(1, productCode);
+                deleteFamilyProductStatement.executeUpdate();
+            }
+
+            String deleteExpecificFamilyProductSql = "DELETE FROM ExpecificFamily_Product WHERE product_id = ?";
+            try (PreparedStatement deleteExpecificFamilyProductStatement = connection.prepareStatement(deleteExpecificFamilyProductSql)) {
+                deleteExpecificFamilyProductStatement.setInt(1, productCode);
+                deleteExpecificFamilyProductStatement.executeUpdate();
+            }
+
+            String deleteProductSql = "DELETE FROM Product WHERE code = ?";
+            try (PreparedStatement deleteProductStatement = connection.prepareStatement(deleteProductSql)) {
+                deleteProductStatement.setInt(1, productCode);
+                int rowsDeleted = deleteProductStatement.executeUpdate();
+                return rowsDeleted > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

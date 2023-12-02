@@ -23,6 +23,9 @@ public class storageGestor {
     public List<Storage> showStorage() {
         return dataAccess.getStoragesFromDatabase();
     }
+    public boolean removeStorage(int storageCode) throws SQLException {
+        return dataAccess.removeStorage(storageCode);
+    }
 }
 
 

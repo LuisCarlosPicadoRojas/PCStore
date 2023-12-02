@@ -23,4 +23,8 @@ public class productGestor {
     public List<Product> showProduct() {
         return daoProduct.getProductsFromDatabase();
     }
+
+    public boolean removeProduct(int productCode) throws SQLException {
+        return daoProduct.removeProduct(productCode);
+    }
 }

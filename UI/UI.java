@@ -18,8 +18,8 @@ public class UI {
     }
     public void menuClient() {
         System.out.println("Seleccione una opción:");
-        System.out.println("1. Listar componentes.");
-        System.out.println("2. Listar familias.");
+        System.out.println("1. Listar familias.");
+        System.out.println("2. Listar componentes.");
         System.out.println("3. Cerrar sesion.");
         System.out.println("\nIngrese una opcion");
     }

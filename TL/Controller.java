@@ -76,6 +76,8 @@ public class Controller {
     }
     private static void NewAdministrator(UI interfaz) {
         try {
+            interfaz.printText("No hay usuario administrador");
+            interfaz.printText("Registre uno");
             interfaz.printText("Ingrese el ID del administrador:");
             int ID = Integer.parseInt(interfaz.readText());
 
@@ -112,48 +114,54 @@ public class Controller {
     }
     private static void NewClient(UI interfaz) {
         try {
-            interfaz.printText("Ingrese el ID del cliente:");
-            int ID = Integer.parseInt(interfaz.readText());
+            if (adminGestor.isAnyAdminRegistered()){
+                interfaz.printText("__________________________");
+                interfaz.printText("Ingrese el ID del cliente:");
+                int ID = Integer.parseInt(interfaz.readText());
 
-            interfaz.printText("Ingrese el nombre del cliente:");
-            String name = interfaz.readText();
+                interfaz.printText("Ingrese el nombre del cliente:");
+                String name = interfaz.readText();
 
-            if (ProyectoPOO.Utils.Utils.containsNumbers(name)) {
-                interfaz.printText("Error: El nombre no debe contener números. Por favor, inténtelo de nuevo.");
-                return;
+                if (ProyectoPOO.Utils.Utils.containsNumbers(name)) {
+                    interfaz.printText("Error: El nombre no debe contener números. Por favor, inténtelo de nuevo.");
+                    return;
+                }
+
+                interfaz.printText("Ingrese el apellido del cliente:");
+                String lastName = interfaz.readText();
+
+                if (ProyectoPOO.Utils.Utils.containsNumbers(lastName)) {
+                    interfaz.printText("Error: El apellido no debe contener números. Por favor, inténtelo de nuevo.");
+                    return;
+                }
+
+                interfaz.printText("Ingrese el correo electrónico del cliente:");
+                String email = interfaz.readText();
+                if (!ProyectoPOO.Utils.Utils.isValidEmail(email)) {
+                    interfaz.printText("Error: El correo electrónico no tiene un formato válido. Por favor, inténtelo de nuevo.");
+                    return;
+                }
+                interfaz.printText("Ingrese el número de teléfono del cliente:");
+                String phoneNumber = interfaz.readText();
+
+                interfaz.printText("Ingrese el nombre de usuario del cliente:");
+                String username = interfaz.readText();
+
+                interfaz.printText("Ingrese la contraseña del cliente:");
+                String password = interfaz.readText();
+
+                boolean clientExists = clientGestor.checkClientExist(ID);
+
+                if (clientExists) {
+                    interfaz.printText("El cliente ya existe. Ingrese un ID único.");
+                } else {
+                    clientGestor.registerClient(new Client(ID, name, lastName, email, phoneNumber, username, password));
+                    interfaz.printText("Cliente registrado con éxito.");
+                }
+            }else{
+                NewAdministrator(interfaz);
             }
 
-            interfaz.printText("Ingrese el apellido del cliente:");
-            String lastName = interfaz.readText();
-
-            if (ProyectoPOO.Utils.Utils.containsNumbers(lastName)) {
-                interfaz.printText("Error: El apellido no debe contener números. Por favor, inténtelo de nuevo.");
-                return;
-            }
-
-            interfaz.printText("Ingrese el correo electrónico del cliente:");
-            String email = interfaz.readText();
-            if (!ProyectoPOO.Utils.Utils.isValidEmail(email)) {
-                interfaz.printText("Error: El correo electrónico no tiene un formato válido. Por favor, inténtelo de nuevo.");
-                return;
-            }
-            interfaz.printText("Ingrese el número de teléfono del cliente:");
-            String phoneNumber = interfaz.readText();
-
-            interfaz.printText("Ingrese el nombre de usuario del cliente:");
-            String username = interfaz.readText();
-
-            interfaz.printText("Ingrese la contraseña del cliente:");
-            String password = interfaz.readText();
-
-            boolean clientExists = clientGestor.checkClientExist(ID);
-
-            if (clientExists) {
-                interfaz.printText("El cliente ya existe. Ingrese un ID único.");
-            } else {
-                clientGestor.registerClient(new Client(ID, name, lastName, email, phoneNumber, username, password));
-                interfaz.printText("Cliente registrado con éxito.");
-            }
         } catch (Exception ex) {
             interfaz.printText("Ha ocurrido un error. Intente nuevamente.");
         }
@@ -798,14 +806,12 @@ public class Controller {
                 }
 
                 if (!ramProductList.isEmpty()) {
-                    interfaz.printText("RAM aceptada por la familia: ");
                     for (Ram ram : ramProductList) {
                         interfaz.printText("- " + ram.getName());
                     }
                 }
 
                 if (!storageList.isEmpty()) {
-                    interfaz.printText("Almacenamiento aceptado por la familia: ");
                     for (Storage storage : storageList) {
                         interfaz.printText("- " + storage.getName());
                     }
@@ -843,14 +849,12 @@ public class Controller {
                 }
 
                 if (!ramProductList.isEmpty()) {
-                    interfaz.printText("RAM aceptada por la familia: ");
                     for (Ram ram : ramProductList) {
                         interfaz.printText("- " + ram.getName());
                     }
                 }
 
                 if (!storageList.isEmpty()) {
-                    interfaz.printText("Almacenamiento aceptado por la familia: ");
                     for (Storage storage : storageList) {
                         interfaz.printText("- " + storage.getName());
                     }

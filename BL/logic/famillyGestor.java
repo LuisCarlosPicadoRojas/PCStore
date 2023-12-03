@@ -39,4 +39,8 @@ public class famillyGestor {
     public String addStorageToFamily(Storage storage, String typeFamily) {
         return daoFamily.addStorageToFamily(storage, typeFamily);
     }
+
+    public boolean deleteFamily(String typeFamily) throws SQLException {
+        return daoFamily.deleteFamily(typeFamily);
+    }
 }

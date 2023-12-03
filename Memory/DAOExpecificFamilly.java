@@ -279,4 +279,41 @@ public class DAOExpecificFamilly {
         return false;
     }
 
+    public boolean deleteExpecificFamily(String expecificFamilyName) throws SQLException {
+        int expecificFamilyId = getIDByName(expecificFamilyName);
+        if (expecificFamilyId != -1) {
+            try {
+                String deleteExpecificFamilyProductSql = "DELETE FROM ExpecificFamily_Product WHERE expecificFamily_id = ?";
+                try (PreparedStatement deleteExpecificFamilyProductStatement = connection.prepareStatement(deleteExpecificFamilyProductSql)) {
+                    deleteExpecificFamilyProductStatement.setInt(1, expecificFamilyId);
+                    deleteExpecificFamilyProductStatement.executeUpdate();
+                }
+
+                String deleteExpecificFamilyRamSql = "DELETE FROM ExpecificFamily_Ram WHERE expecificFamily_id = ?";
+                try (PreparedStatement deleteExpecificFamilyRamStatement = connection.prepareStatement(deleteExpecificFamilyRamSql)) {
+                    deleteExpecificFamilyRamStatement.setInt(1, expecificFamilyId);
+                    deleteExpecificFamilyRamStatement.executeUpdate();
+                }
+
+                String deleteExpecificFamilyStorageSql = "DELETE FROM ExpecificFamily_Storage WHERE expecificFamily_id = ?";
+                try (PreparedStatement deleteExpecificFamilyStorageStatement = connection.prepareStatement(deleteExpecificFamilyStorageSql)) {
+                    deleteExpecificFamilyStorageStatement.setInt(1, expecificFamilyId);
+                    deleteExpecificFamilyStorageStatement.executeUpdate();
+                }
+
+                String deleteExpecificFamilySql = "DELETE FROM ExpecificFamily WHERE id = ?";
+                try (PreparedStatement deleteExpecificFamilyStatement = connection.prepareStatement(deleteExpecificFamilySql)) {
+                    deleteExpecificFamilyStatement.setInt(1, expecificFamilyId);
+                    int rowsDeleted = deleteExpecificFamilyStatement.executeUpdate();
+                    return rowsDeleted > 0;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw e;
+            }
+        } else {
+            System.out.println("La familia específica no existe en la base de datos.");
+            return false;
+        }
+    }
 }

@@ -261,6 +261,10 @@ public class Controller {
                         break;
 
                     case 7:
+                        deleteFamily(interfaz);
+                        break;
+
+                    case 8:
                         interfaz.printText("Hasta luego.");
                         return;
 
@@ -948,6 +952,48 @@ public class Controller {
 
         if (count == 0) {
             interfaz.printText("No hay familias registradas.");
+        }
+    }
+
+    public static void deleteFamily(UI interfaz) {
+        try {
+            List<Familly> familyList = famillyGestor.showFamilies();
+            List<ExpecificFamilly> expecificFamilyList = expecificFamillyGestor.showExpecificFamilies();
+
+            if (familyList.isEmpty() && expecificFamilyList.isEmpty()) {
+                interfaz.printText("No hay familias disponibles.");
+                return;
+            }
+
+            interfaz.printText("¿Qué tipo de familia desea seleccionar para eliminar?");
+            interfaz.printText("1. Familia");
+            interfaz.printText("2. Familia Específica");
+            interfaz.printText("Ingrese el número correspondiente:");
+            int selectedFamilyType = Integer.parseInt(interfaz.readText());
+
+            if (selectedFamilyType == 1 && !familyList.isEmpty()) {
+                String selectedFamily = selectFamily(interfaz);
+                boolean deleted = famillyGestor.deleteFamily(selectedFamily);
+
+                if (deleted) {
+                    interfaz.printText("Familia eliminada correctamente: " + selectedFamily);
+                } else {
+                    interfaz.printText("No se pudo eliminar la familia: " + selectedFamily);
+                }
+            } else if (selectedFamilyType == 2 && !expecificFamilyList.isEmpty()) {
+                String selectedExpecificFamily = selectExpecificFamily(interfaz);
+                boolean deleted = expecificFamillyGestor.deleteExpecificFamily(selectedExpecificFamily);
+
+                if (deleted) {
+                    interfaz.printText("Familia específica eliminada correctamente: " + selectedExpecificFamily);
+                } else {
+                    interfaz.printText("No se pudo eliminar la familia específica: " + selectedExpecificFamily);
+                }
+            } else {
+                interfaz.printText("No hay familias del tipo seleccionado.");
+            }
+        } catch (Exception e) {
+            interfaz.printText("Se produjo un error. Por favor, inténtelo de nuevo.");
         }
     }
 }

@@ -268,4 +268,41 @@ public class DAOFamilly {
 
         return familyId;
     }
+    public boolean deleteFamily(String familyType) throws SQLException {
+        int familyId = getIDByName(familyType);
+        if (familyId != -1) {
+            try {
+                String deleteFamilyProductSql = "DELETE FROM Family_Product WHERE family_id = ?";
+                try (PreparedStatement deleteFamilyProductStatement = connection.prepareStatement(deleteFamilyProductSql)) {
+                    deleteFamilyProductStatement.setInt(1, familyId);
+                    deleteFamilyProductStatement.executeUpdate();
+                }
+
+                String deleteFamilyRamSql = "DELETE FROM Family_Ram WHERE family_id = ?";
+                try (PreparedStatement deleteFamilyRamStatement = connection.prepareStatement(deleteFamilyRamSql)) {
+                    deleteFamilyRamStatement.setInt(1, familyId);
+                    deleteFamilyRamStatement.executeUpdate();
+                }
+
+                String deleteFamilyStorageSql = "DELETE FROM Family_Storage WHERE family_id = ?";
+                try (PreparedStatement deleteFamilyStorageStatement = connection.prepareStatement(deleteFamilyStorageSql)) {
+                    deleteFamilyStorageStatement.setInt(1, familyId);
+                    deleteFamilyStorageStatement.executeUpdate();
+                }
+
+                String deleteFamilySql = "DELETE FROM Family WHERE id = ?";
+                try (PreparedStatement deleteFamilyStatement = connection.prepareStatement(deleteFamilySql)) {
+                    deleteFamilyStatement.setInt(1, familyId);
+                    int rowsDeleted = deleteFamilyStatement.executeUpdate();
+                    return rowsDeleted > 0;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw e;
+            }
+        } else {
+            System.out.println("La familia no existe en la base de datos.");
+            return false;
+        }
+    }
 }

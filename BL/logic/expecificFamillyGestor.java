@@ -6,6 +6,7 @@ import ProyectoPOO.Main.BL.entities.Ram;
 import ProyectoPOO.Main.BL.entities.Storage;
 import ProyectoPOO.Main.Memory.DAOExpecificFamilly;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class expecificFamillyGestor {
@@ -37,6 +38,9 @@ public class expecificFamillyGestor {
 
     public String addStorageToExpecificFamily(Storage storage, String expecificFamily) {
         return daoExpecificFamily.addStorageToExpecificFamily(storage, expecificFamily);
+    }
+    public boolean deleteExpecificFamily(String expecificFamily) throws SQLException {
+        return daoExpecificFamily.deleteExpecificFamily(expecificFamily);
     }
 
 }

@@ -3,11 +3,11 @@ import java.awt.*;
 import java.util.List;
 
 public class Report {
-    private int sales;
-    private String computerDetails;
-    private int rating;
-    private double price;
-    private List<Component> componentsSold;
+        private int sales;
+        private String computerDetails;
+        private int rating;
+        private double price;
+        private List<Component> componentsSold;
 
     public Report(int sales, String computerDetails, int rating, double price, List<Component> componentsSold) {
         this.sales = sales;

@@ -55,7 +55,6 @@ public class DAOProduct {
         }
         return products;
     }
-
     public boolean removeProduct(int productCode) throws SQLException {
         try {
             String deleteFamilyProductSql = "DELETE FROM Family_Product WHERE product_id = ?";
@@ -76,6 +75,23 @@ public class DAOProduct {
                 int rowsDeleted = deleteProductStatement.executeUpdate();
                 return rowsDeleted > 0;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    public boolean updateProduct(Product updatedProduct) throws SQLException {
+        String sql = "UPDATE Product SET name = ?, price = ?, productType = ?, rating = ? WHERE code = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, updatedProduct.getName());
+            statement.setFloat(2, updatedProduct.getPrice());
+            statement.setString(3, updatedProduct.getProductType());
+            statement.setFloat(4, updatedProduct.getRating());
+            statement.setInt(5, updatedProduct.getCode());
+
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;

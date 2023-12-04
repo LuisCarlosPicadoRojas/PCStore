@@ -305,4 +305,28 @@ public class DAOFamilly {
             return false;
         }
     }
+    public boolean updateFamily(Familly family) {
+        int familyId = getIDByName(family.getTypeFamily());
+        if (familyId != -1) {
+            String updateQuery = "UPDATE Family SET typeFamily = ?, sticks = ?, ramList = ?, storage = ?, gpu = ? WHERE id = ?";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+                preparedStatement.setString(1, family.getTypeFamily());
+                preparedStatement.setInt(2, family.getSticks());
+                String ramListString = family.getRamList().toString();
+                preparedStatement.setString(3, ramListString);
+                preparedStatement.setString(4, family.getStorage());
+                preparedStatement.setString(5, family.getGpu());
+                preparedStatement.setInt(6, familyId);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+                return rowsAffected > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("La familia no existe en la base de datos.");
+        }
+        return false;
+    }
 }

@@ -87,5 +87,25 @@ public class DAOStorage {
             throw e;
         }
     }
+
+    public boolean updateStorage(Storage updatedStorage) throws SQLException {
+        String sql = "UPDATE Storage SET name = ?, price = ?, TypeStorage = ?, StorageSpace = ?, productType = ?, rating = ? WHERE code = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, updatedStorage.getName());
+            statement.setFloat(2, updatedStorage.getPrice());
+            statement.setString(3, updatedStorage.getTypeStorage());
+            statement.setInt(4, updatedStorage.getStorageSpace());
+            statement.setString(5, updatedStorage.getProductType());
+            statement.setFloat(6, updatedStorage.getRating());
+            statement.setInt(7, updatedStorage.getCode());
+
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }
 

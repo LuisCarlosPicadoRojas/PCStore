@@ -27,4 +27,9 @@ public class productGestor {
     public boolean removeProduct(int productCode) throws SQLException {
         return daoProduct.removeProduct(productCode);
     }
+    public boolean updateProduct(Product updatedProduct) throws SQLException {
+
+        return daoProduct.updateProduct(updatedProduct);
+
+    }
 }

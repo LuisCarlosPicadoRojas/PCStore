@@ -42,5 +42,8 @@ public class expecificFamillyGestor {
     public boolean deleteExpecificFamily(String expecificFamily) throws SQLException {
         return daoExpecificFamily.deleteExpecificFamily(expecificFamily);
     }
+    public boolean updateExpecificFamily(ExpecificFamilly expecificFamily) {
+        return daoExpecificFamily.updateExpecificFamily(expecificFamily);
+    }
 
 }

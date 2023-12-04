@@ -24,5 +24,9 @@ public class ramGestor {
     public boolean removeRam(int ramCode) throws SQLException {
         return daoRam.removeRam(ramCode);
     }
+    public boolean updateRam(Ram updatedRam) throws SQLException {
+        return daoRam.updateRam(updatedRam);
+    }
+
 
 }

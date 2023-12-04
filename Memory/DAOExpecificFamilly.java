@@ -316,4 +316,31 @@ public class DAOExpecificFamilly {
             return false;
         }
     }
+
+    public boolean updateExpecificFamily(ExpecificFamilly expecificFamily) {
+        int expecificFamilyId = getIDByName(expecificFamily.getExpecificFamily());
+        if (expecificFamilyId != -1) {
+            String updateQuery = "UPDATE ExpecificFamily SET typeFamily = ?, sticks = ?, battery = ?, weight = ?, ramList = ?, storage = ?, gpu = ? WHERE id = ?";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+                preparedStatement.setString(1, expecificFamily.getTypeFamily());
+                preparedStatement.setInt(2, expecificFamily.getSticks());
+                preparedStatement.setInt(3, expecificFamily.getBattery());
+                preparedStatement.setString(4, expecificFamily.getWeight());
+                String ramListString = expecificFamily.getRamList().toString();
+                preparedStatement.setString(5, ramListString);
+                preparedStatement.setString(6, expecificFamily.getStorage());
+                preparedStatement.setString(7, expecificFamily.getGpu());
+                preparedStatement.setInt(8, expecificFamilyId);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+                return rowsAffected > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("La familia específica no existe en la base de datos.");
+        }
+        return false;
+    }
 }

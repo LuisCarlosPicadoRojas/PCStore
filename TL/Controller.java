@@ -265,6 +265,9 @@ public class Controller {
                         break;
 
                     case 8:
+                        updateComponent(interfaz);
+                        break;
+                    case 9:
                         interfaz.printText("Hasta luego.");
                         return;
 
@@ -592,7 +595,7 @@ public class Controller {
             }
 
             if (productList.isEmpty() && ramList.isEmpty() && storageList.isEmpty()) {
-                interfaz.printText("No hay productos disponibles.");
+                interfaz.printText("No hay componentes disponibles.");
                 return;
             }
 
@@ -615,6 +618,10 @@ public class Controller {
     }
     public static void addComponentToFamilly1(UI interfaz, List<Product> productList, List<Ram> ramList, List<Storage> storageList, List<Familly> famillyList) {
         try {
+            if (famillyList.isEmpty()) {
+                interfaz.printText("No hay familias disponibles. No se pueden agregar componentes.");
+                return;
+            }
             interfaz.printText("Componentes disponibles:");
             int count = 1;
 
@@ -692,7 +699,7 @@ public class Controller {
         for (int i = 0; i < famillyList.size(); i++) {
             interfaz.printText((i + 1) + ". " + famillyList.get(i).getTypeFamily());
         }
-        interfaz.printText("Seleccione el número de la familia para agregar el componente:");
+        interfaz.printText("Seleccione el número de la familia:");
         int selectedFamilyIndex = Integer.parseInt(interfaz.readText()) - 1;
         if (selectedFamilyIndex >= 0 && selectedFamilyIndex < famillyList.size()) {
             return famillyList.get(selectedFamilyIndex).getTypeFamily();
@@ -701,11 +708,15 @@ public class Controller {
         }
     }
     private static void deleteComponent(UI interfaz) throws Exception {
-        interfaz.printText("Componentes disponibles:");
+
         List<Product> productList = productGestor.showProduct();
         List<Ram> ramList = ramGestor.showRam();
         List<Storage> storageList = storageGestor.showStorage();
-
+        if (productList.isEmpty() && ramList.isEmpty() && storageList.isEmpty()){
+            interfaz.printText("No hay compononentes disponibles");
+            return;
+        }
+        interfaz.printText("Componentes disponibles:");
         int count = 1;
         if (!productList.isEmpty()) {
             for (Product product : productList) {
@@ -780,6 +791,10 @@ public class Controller {
 
     public static void addComponentToExpecificFamilly1(UI interfaz, List<Product> productList, List<Ram> ramList, List<Storage> storageList, List<ExpecificFamilly> ExpecificFamilyList) {
         try {
+            if (ExpecificFamilyList.isEmpty()) {
+                interfaz.printText("No hay familias disponibles. No se pueden agregar componentes.");
+                return;
+            }
             interfaz.printText("Componentes disponibles:");
             int count = 1;
 
@@ -855,7 +870,7 @@ public class Controller {
         for (int i = 0; i < expecificFamilyList.size(); i++) {
             interfaz.printText((i + 1) + ". " + expecificFamilyList.get(i).getExpecificFamily());
         }
-        interfaz.printText("Seleccione el número de la familia específica para agregar el componente:");
+        interfaz.printText("Seleccione el número de la familia específica: ");
         int selectedFamilyIndex = Integer.parseInt(interfaz.readText()) - 1;
         if (selectedFamilyIndex >= 0 && selectedFamilyIndex < expecificFamilyList.size()) {
             return expecificFamilyList.get(selectedFamilyIndex).getExpecificFamily();
@@ -994,6 +1009,85 @@ public class Controller {
             }
         } catch (Exception e) {
             interfaz.printText("Se produjo un error. Por favor, inténtelo de nuevo.");
+        }
+    }
+
+    private static void updateComponent(UI interfaz) throws Exception {
+        interfaz.printText("Componentes disponibles:");
+        List<Product> productList = productGestor.showProduct();
+        List<Ram> ramList = ramGestor.showRam();
+        List<Storage> storageList = storageGestor.showStorage();
+        if (productList.isEmpty() && ramList.isEmpty() && storageList.isEmpty()){
+            interfaz.printText("No hay compononentes disponibles");
+            return;
+        }
+
+
+        int count = 1;
+        if (!productList.isEmpty()) {
+            for (Product product : productList) {
+                interfaz.printText(count + ". " + product.getName());
+                count++;
+            }
+        }
+        if (!ramList.isEmpty()) {
+            for (Ram ram : ramList) {
+                interfaz.printText(count + ". " + ram.getName());
+                count++;
+            }
+        }
+        if (!storageList.isEmpty()) {
+            for (Storage storage : storageList) {
+                interfaz.printText(count + ". " + storage.getName());
+                count++;
+            }
+        }
+
+        interfaz.printText("Ingrese el número del componente a actualizar:");
+        int selectedComponentIndex = Integer.parseInt(interfaz.readText()) - 1;
+        if (selectedComponentIndex < 0 || selectedComponentIndex >= (productList.size() + ramList.size() + storageList.size())) {
+            interfaz.printText("Selección inválida. Por favor, seleccione un número válido.");
+            return;
+        }
+        float rating;
+        interfaz.printText("Ingrese el nuevo nombre del producto:");
+        String newName = interfaz.readText();
+        interfaz.printText("Ingrese el nuevo precio del producto:");
+        float newPrice = Float.parseFloat(interfaz.readText());
+        boolean success;
+        if (selectedComponentIndex < productList.size()) {
+
+            Product selectedProduct = productList.get(selectedComponentIndex);
+            interfaz.printText("Ingrese el rating del producto:");
+            rating = Float.parseFloat(interfaz.readText());
+            success = productGestor.updateProduct(new Product(selectedProduct.getCode(), newName, newPrice, selectedProduct.getProductType(), rating));
+            if (success){interfaz.printText(selectedProduct.getName() + " fue actualizado con exito." );}
+
+        } else if (selectedComponentIndex < productList.size() + ramList.size()) {
+
+            Ram selectedRam = ramList.get(selectedComponentIndex - productList.size());
+            interfaz.printText("Ingrese el rating del producto:");
+            rating = Float.parseFloat(interfaz.readText());
+            interfaz.printText("Ingrese cuántas GBs posee la ram:");
+            int GBs = Integer.parseInt(interfaz.readText());
+            success = ramGestor.updateRam(new Ram(selectedRam.getCode(), newName, newPrice, GBs, selectedRam.getProductType(), rating));
+            if (success){interfaz.printText(selectedRam.getName() + " fue actualizado con exito." );}
+        } else if (selectedComponentIndex < productList.size() + ramList.size() + storageList.size()) {
+
+            Storage selectedStorage = storageList.get(selectedComponentIndex - productList.size() - ramList.size());
+            interfaz.printText("Ingrese el rating del producto:");
+            rating = Float.parseFloat(interfaz.readText());
+            interfaz.printText("Tipo de almacenamiento (SSD, HDD):");
+            String TypeStorage = interfaz.readText().toUpperCase();
+            if (TypeStorage.equals("SSD") || TypeStorage.equals("HDD")) {
+                interfaz.printText("Cantidad de almacenamiento(GBs):");
+                int StorageSpace = Integer.parseInt(interfaz.readText());
+                success = storageGestor.updateStorage(new Storage(selectedStorage.getCode(), newName, newPrice, selectedStorage.getProductType(), rating, TypeStorage, StorageSpace));
+                if (success){interfaz.printText(selectedStorage.getName() + " fue actualizado con exito." );}
+            } else {
+                interfaz.printText("Tipo de almacenamiento no válido. Por favor, ingrese SSD o HDD.");
+            }
+
         }
     }
 }

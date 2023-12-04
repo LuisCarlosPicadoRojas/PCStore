@@ -19,12 +19,14 @@ public class storageGestor {
     public void registerStorage(Storage storage) throws SQLException {
         dataAccess.addStorage(storage);
     }
-
     public List<Storage> showStorage() {
         return dataAccess.getStoragesFromDatabase();
     }
     public boolean removeStorage(int storageCode) throws SQLException {
         return dataAccess.removeStorage(storageCode);
+    }
+    public boolean updateStorage(Storage updatedStorage) throws SQLException {
+        return dataAccess.updateStorage(updatedStorage);
     }
 }
 

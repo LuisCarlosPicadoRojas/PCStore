@@ -81,4 +81,22 @@ public class DAORam {
             throw e;
         }
     }
+    public boolean updateRam(Ram updatedRam) throws SQLException {
+        String sql = "UPDATE Ram SET name = ?, price = ?, GBs = ?, productType = ?, rating = ? WHERE code = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, updatedRam.getName());
+            statement.setFloat(2, updatedRam.getPrice());
+            statement.setInt(3, updatedRam.getGBs());
+            statement.setString(4, updatedRam.getProductType());
+            statement.setFloat(5, updatedRam.getRating());
+            statement.setInt(6, updatedRam.getCode());
+
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

@@ -43,4 +43,7 @@ public class famillyGestor {
     public boolean deleteFamily(String typeFamily) throws SQLException {
         return daoFamily.deleteFamily(typeFamily);
     }
+    public boolean updateFamily(Familly family) {
+        return daoFamily.updateFamily(family);
+    }
 }

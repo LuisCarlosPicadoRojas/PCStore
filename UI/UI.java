@@ -16,7 +16,8 @@ public class UI {
         System.out.println("6. Eliminar componentes.");
         System.out.println("7. Eliminar familias.");
         System.out.println("8. Modificar componente.");
-        System.out.println("9. Cerrar sesion.");
+        System.out.println("9. Modificar familias.");
+        System.out.println("10. Cerrar sesion.");
         System.out.println("\nIngrese una opcion");
     }
     public void menuClient() {

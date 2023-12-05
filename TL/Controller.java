@@ -268,6 +268,9 @@ public class Controller {
                         updateComponent(interfaz);
                         break;
                     case 9:
+                        updateFamilly(interfaz);
+                        break;
+                    case 10:
                         interfaz.printText("Hasta luego.");
                         return;
 
@@ -1088,6 +1091,111 @@ public class Controller {
                 interfaz.printText("Tipo de almacenamiento no válido. Por favor, ingrese SSD o HDD.");
             }
 
+        }
+    }
+
+    private static void updateFamilly(UI interfaz) throws Exception {
+        interfaz.printText("Familias disponibles:");
+        List<Familly> famillyList = famillyGestor.showFamilies();
+        List<ExpecificFamilly> expecificFamillyList = expecificFamillyGestor.showExpecificFamilies();
+
+        if (famillyList.isEmpty() && expecificFamillyList.isEmpty()){
+            interfaz.printText("No hay familias disponibles");
+            return;
+        }
+
+        int count = 1;
+        if (!famillyList.isEmpty()) {
+            for (Familly familly : famillyList) {
+                interfaz.printText(count + ". " + familly.getTypeFamily());
+                count++;
+            }
+        }
+        if (!expecificFamillyList.isEmpty()) {
+            for (ExpecificFamilly expecificFamilly : expecificFamillyList) {
+                interfaz.printText(count + ". " + expecificFamilly.getExpecificFamily());
+                count++;
+            }
+        }
+
+        interfaz.printText("Ingrese el número de la familia a actualizar:");
+        int selectedComponentIndex = Integer.parseInt(interfaz.readText()) - 1;
+
+        if (selectedComponentIndex < 0 || selectedComponentIndex >= (famillyList.size() + expecificFamillyList.size())) {
+            interfaz.printText("Selección inválida. Por favor, seleccione un número válido.");
+            return;
+        }
+
+        interfaz.printText("Ingrese la cantidad máxima de sticks para la familia:");
+        int newSticks = Integer.parseInt(interfaz.readText());
+
+        List<Integer> ramList = new ArrayList<>();
+        boolean addAnotherRam = true;
+
+        while (addAnotherRam) {
+            interfaz.printText("Ingrese la  RAM aceptada por la familia:");
+            int ram = Integer.parseInt(interfaz.readText());
+            ramList.add(ram);
+
+            interfaz.printText("¿Desea agregar RAM? (S/N):");
+            String addMoreRam = interfaz.readText();
+
+            if (addMoreRam != null) {
+                if (addMoreRam.equalsIgnoreCase("N")) {
+                    addAnotherRam = false;
+                } else if (!addMoreRam.equalsIgnoreCase("S")) {
+                    interfaz.printText("Error: Por favor, ingrese S o N.");
+                }
+            }
+        }
+
+        String newStorage = "";
+        boolean validStorage = false;
+        while (!validStorage) {
+            interfaz.printText("Ingrese el tipo de almacenamiento (SSD/HDD):");
+            newStorage = interfaz.readText();
+            if (newStorage.equalsIgnoreCase("SSD") || newStorage.equalsIgnoreCase("HDD")) {
+                validStorage = true;
+            } else {
+                interfaz.printText("Tipo de almacenamiento no válido. Por favor, ingrese SSD o HDD.");
+            }
+        }
+
+        boolean hasGPU = false;
+
+        interfaz.printText("¿Tiene tarjeta de video? (S/N):");
+        String hasGPUStr = interfaz.readText();
+
+        if (hasGPUStr != null && hasGPUStr.equalsIgnoreCase("S")) {
+            hasGPU = true;
+        }
+
+        String gpu = hasGPU ? "GPU disponible" : "Sin GPU";
+        boolean success;
+        if (selectedComponentIndex < famillyList.size()) {
+            Familly selectedFamilly = famillyList.get(selectedComponentIndex);
+            success = famillyGestor.updateFamily(new Familly(selectedFamilly.getTypeFamily(), newSticks, ramList, newStorage, selectedFamilly.getGpu()));
+            if (success) {
+                interfaz.printText(selectedFamilly.getTypeFamily() + " fue actualizada con éxito.");
+            }
+        } else if (selectedComponentIndex < famillyList.size() + expecificFamillyList.size()) {
+            ExpecificFamilly selectedExpecificFamilly = expecificFamillyList.get(selectedComponentIndex - famillyList.size());
+            if (selectedExpecificFamilly.getTypeFamily().equalsIgnoreCase("Portables")) {
+                interfaz.printText("Ingrese el peso de la familia:");
+                String newWeight = interfaz.readText();
+
+                interfaz.printText("Ingrese la capacidad de la batería:");
+                int newBattery = Integer.parseInt(interfaz.readText());
+                success = expecificFamillyGestor.updateExpecificFamily(new ExpecificFamilly(selectedExpecificFamilly.getTypeFamily(), newSticks, newBattery, newWeight, ramList, newStorage, gpu, selectedExpecificFamilly.getExpecificFamily()));
+                if (success) {
+                    interfaz.printText(selectedExpecificFamilly.getTypeFamily() + " fue actualizada con éxito.");
+                }
+            }else{
+                success = expecificFamillyGestor.updateExpecificFamily(new ExpecificFamilly(selectedExpecificFamilly.getTypeFamily(), newSticks, ramList, newStorage, gpu, selectedExpecificFamilly.getExpecificFamily()));
+                if (success) {
+                    interfaz.printText(selectedExpecificFamilly.getTypeFamily() + " fue actualizada con éxito.");
+                }
+            }
         }
     }
 }

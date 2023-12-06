@@ -97,4 +97,24 @@ public class DAOProduct {
             throw e;
         }
     }
+
+    public boolean checkProductExistence(int productCode) throws SQLException {
+        String sql = "SELECT COUNT(*) AS count FROM Product WHERE code = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, productCode);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt("count");
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return false;
+    }
+
+
 }

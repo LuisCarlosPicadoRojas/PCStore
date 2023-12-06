@@ -6,7 +6,6 @@ public class Product {
     private float rating = 0;
     private String productType;
 
-    // Constructors
     public Product(int code, String name, float price, String productType) {
         this.code = code;
         this.name = name;

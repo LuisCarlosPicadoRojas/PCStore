@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ProyectoPOO.Main.Utils.Utils.*;
 
 
 public class Controller {
@@ -24,6 +23,7 @@ public class Controller {
     private static Connection connection;
     private static clientGestor clientGestor;
     private static adminGestor adminGestor;
+    private static billGestor billGestor;
 
 
     public Controller() throws SQLException {
@@ -36,6 +36,7 @@ public class Controller {
         expecificFamillyGestor = new expecificFamillyGestor(new DAOExpecificFamilly(connection));
         clientGestor = new clientGestor(new DAOClient(connection));
         adminGestor = new adminGestor(new DAOAdministrator(connection));
+        billGestor = new billGestor(new DAOBill(connection));
     }
     public void start() throws Exception{
         String loggedIn = null;
@@ -215,6 +216,14 @@ public class Controller {
                         break;
 
                     case 3:
+                        ClientsPC(interfaz);
+                        break;
+
+                    case 4:
+                        showBillClient(interfaz);
+                        break;
+
+                    case 5:
                         interfaz.printText("Hasta luego.");
                         return;
 
@@ -223,6 +232,7 @@ public class Controller {
                         break;
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 interfaz.printText("Se produjo un error. Por favor, inténtelo de nuevo.");
             }
         }
@@ -271,6 +281,9 @@ public class Controller {
                         updateFamilly(interfaz);
                         break;
                     case 10:
+                        showAllBills(interfaz);
+                        break;
+                    case 11:
                         interfaz.printText("Hasta luego.");
                         return;
 
@@ -290,9 +303,7 @@ public class Controller {
 
             interfaz.printText("Ingrese el precio del componente:");
             float price = Float.parseFloat(interfaz.readText());
-
-
-            int code = generateRandomCode();
+            int code = productGestor.generateUniqueID();
             interfaz.menuComponents();
             int option = Integer.parseInt(interfaz.readText());
             String typeProduct;
@@ -1196,6 +1207,436 @@ public class Controller {
                     interfaz.printText(selectedExpecificFamilly.getTypeFamily() + " fue actualizada con éxito.");
                 }
             }
+        }
+    }
+    private static void ClientsPC(UI interfaz) throws Exception {
+        interfaz.printText("Familias disponibles:");
+        List<Familly> famillyList = famillyGestor.showFamilies();
+        List<ExpecificFamilly> expecificFamillyList = expecificFamillyGestor.showExpecificFamilies();
+
+
+        if (famillyList.isEmpty() && expecificFamillyList.isEmpty()) {
+            interfaz.printText("No hay familias disponibles");
+            return;
+        }
+
+        int count = 1;
+        if (!famillyList.isEmpty()) {
+            for (Familly familly : famillyList) {
+                interfaz.printText(count + ". " + familly.getTypeFamily());
+                count++;
+            }
+        }
+        if (!expecificFamillyList.isEmpty()) {
+            for (ExpecificFamilly expecificFamilly : expecificFamillyList) {
+                interfaz.printText(count + ". " + expecificFamilly.getExpecificFamily());
+                count++;
+            }
+        }
+
+        interfaz.printText("Ingrese el número de la familia a actualizar:");
+        int selectedComponentIndex = Integer.parseInt(interfaz.readText()) - 1;
+
+        if (selectedComponentIndex < 0 || selectedComponentIndex >= (famillyList.size() + expecificFamillyList.size())) {
+            interfaz.printText("Selección inválida. Por favor, seleccione un número válido.");
+            return;
+        }
+
+        if (selectedComponentIndex < famillyList.size()) {
+            Familly selectedFamilly = famillyList.get(selectedComponentIndex);
+            List<Product> familiProduct = selectedFamilly.getProductList();
+            interfaz.printText("Seleccione un procesador:");
+            for (Product producto : familiProduct) {
+                if (producto.getProductType().equals("Procesador")) {
+                    interfaz.printText(" Nombre: " + producto.getName() + " ID: " + producto.getCode());
+                }
+            }
+
+            interfaz.printText("Ingrese el código del procesador seleccionado:");
+            int selectedProcessorCode = Integer.parseInt(interfaz.readText());
+            Product selectedProcessor = null;
+            for (Product producto : familiProduct) {
+                if (producto.getProductType().equals("Procesador") && producto.getCode() == selectedProcessorCode) {
+                    selectedProcessor = producto;
+                    break;
+                }
+            }
+            if (selectedProcessor != null) {
+                interfaz.printText("Seleccione una tarjeta de video:");
+                for (Product producto : familiProduct) {
+                    if (producto.getProductType().equals("Tarjeta de video.")) {
+                        interfaz.printText(" Nombre: " + producto.getName() + " ID: " + producto.getCode());
+                    }
+                }
+
+                interfaz.printText("Ingrese el código de la tarjeta de video seleccionada:");
+                int selectedGraphicsCardCode = Integer.parseInt(interfaz.readText());
+
+                Product selectedGraphicsCard = null;
+                for (Product producto : familiProduct) {
+                    if (producto.getProductType().equals("Tarjeta de video.") && producto.getCode() == selectedGraphicsCardCode) {
+                        selectedGraphicsCard = producto;
+                        break;
+                    }
+                }
+                if (selectedGraphicsCard != null) {
+                    interfaz.printText("Seleccione una Tarjeta Madre:");
+                    for (Product producto : familiProduct) {
+                        if (producto.getProductType().equals("Tarjeta Madre")) {
+                            interfaz.printText("Nombre: " + producto.getName() + " ID: " + producto.getCode());
+                        }
+                    }
+
+                    interfaz.printText("Ingrese el código de la Tarjeta Madre seleccionada:");
+                    int selectedMotherboardCode = Integer.parseInt(interfaz.readText());
+
+                    Product selectedMotherboard = null;
+                    for (Product producto : familiProduct) {
+                        if (producto.getProductType().equals("Tarjeta Madre") && producto.getCode() == selectedMotherboardCode) {
+                            selectedMotherboard = producto;
+                            break;
+                        }
+                    }
+                    if (selectedMotherboard != null) {
+                        interfaz.printText("Seleccione una Fuente de Poder:");
+                        for (Product producto : familiProduct) {
+                            if (producto.getProductType().equals("Fuente de poder")) {
+                                interfaz.printText("Nombre: " + producto.getName() + " ID: " + producto.getCode());
+                            }
+                        }
+
+                        interfaz.printText("Ingrese el código de la Fuente de Poder seleccionada:");
+                        int selectedPowerSupplyCode = Integer.parseInt(interfaz.readText());
+
+                        Product selectedPowerSupply = null;
+                        for (Product producto : familiProduct) {
+                            if (producto.getProductType().equals("Fuente de poder") && producto.getCode() == selectedPowerSupplyCode) {
+                                selectedPowerSupply = producto;
+                                break;
+                            }
+                        }
+                        if (selectedPowerSupply != null) {
+                            List<Ram> familiRam = selectedFamilly.getRamProductList();
+                            interfaz.printText("Seleccione una RAM:");
+                            for (Ram ram : familiRam) {
+                                interfaz.printText("Nombre: " + ram.getName() + " ID: " + ram.getCode());
+                            }
+
+                            interfaz.printText("Ingrese el código de la RAM seleccionada:");
+                            int selectedRamCode = Integer.parseInt(interfaz.readText());
+
+                            Ram selectedRam = null;
+                            for (Ram ram : familiRam) {
+                                if (ram.getCode() == selectedRamCode) {
+                                    selectedRam = ram;
+                                    break;
+                                }
+                            }
+
+                            if (selectedRam != null) {
+                                List<Storage> familiStorage = selectedFamilly.getStorageList();
+                                interfaz.printText("Seleccione un Almacenamiento:");
+                                for (Storage storage : familiStorage) {
+                                    interfaz.printText("Nombre: " + storage.getName() + " ID: " + storage.getCode());
+                                }
+
+                                interfaz.printText("Ingrese el código del Almacenamiento seleccionado:");
+                                int selectedStorageCode = Integer.parseInt(interfaz.readText());
+
+                                Storage selectedStorage = null;
+                                for (Storage storage : familiStorage) {
+                                    if (storage.getCode() == selectedStorageCode) {
+                                        selectedStorage = storage;
+                                        break;
+                                    }
+                                }
+
+                                if (selectedStorage != null) {
+                                    interfaz.printText("Desea realizar la compra de una PC con los siguientes componentes:");
+                                    interfaz.printText("Procesador: " + selectedProcessor.getName() + " Precio: " + selectedProcessor.getPrice());
+                                    interfaz.printText("Tarjeta de Video: " + selectedGraphicsCard.getName() + " Precio: " + selectedGraphicsCard.getPrice());
+                                    interfaz.printText("Tarjeta Madre: " + selectedMotherboard.getName() + " Precio: " + selectedMotherboard.getPrice());
+                                    interfaz.printText("Fuente de Poder: " + selectedPowerSupply.getName() + " Precio: " + selectedPowerSupply.getPrice());
+                                    interfaz.printText("RAM: " + selectedRam.getName() + " Precio: " + selectedRam.getPrice());
+                                    interfaz.printText("Almacenamiento: " + selectedStorage.getName() + " Precio: " + selectedStorage.getPrice());
+                                    float TotalPrice = selectedRam.getPrice() + selectedMotherboard.getPrice() + selectedProcessor.getPrice() + selectedStorage.getPrice() + selectedPowerSupply.getPrice() + selectedGraphicsCard.getPrice();
+                                    interfaz.printText("Precio total: " + TotalPrice);
+                                    interfaz.printText("");
+                                    interfaz.printText("Confirmar la compra (S/N):");
+                                    String confirmacionCompra = interfaz.readText().toUpperCase();
+
+                                    if (confirmacionCompra.equals("S")) {
+                                        interfaz.printText("Por favor, ingrese a nombre de quien sera la factura:");
+                                        String clientName = interfaz.readText();
+
+                                        interfaz.printText("Por favor, ingrese el apellido  de " + clientName);
+                                        String clientLastName = interfaz.readText();
+
+                                        interfaz.printText("Por favor, ingrese el numero de telefono de " + clientName + " " + clientLastName);
+                                        String clientPhoneNumber = interfaz.readText();
+                                        int billNumber = billGestor.generateUniqueBillNumber();
+                                        billGestor.createBill(new Bill(billNumber, clientName, clientLastName, clientPhoneNumber, selectedRam.getName(), selectedProcessor.getName(), selectedStorage.getName(), selectedPowerSupply.getName(), selectedMotherboard.getName(), selectedGraphicsCard.getName(), TotalPrice));
+                                        interfaz.printText("Compra realizada con éxito. ¡Gracias por su compra! el numero de su factura es: " + billNumber);
+                                    } else if (confirmacionCompra.equals("N")) {
+                                        interfaz.printText("Compra cancelada.");
+                                    } else {
+                                        interfaz.printText("Respuesta no válida. Por favor, responda S para confirmar o N para cancelar.");
+                                    }
+                                } else {
+                                    interfaz.printText("Código de Almacenamiento inválido. Por favor, seleccione un código válido.");
+                                    return;
+                                }
+                            } else {
+                                interfaz.printText("Código de RAM inválido. Por favor, seleccione un código válido.");
+                                return;
+                            }
+                        } else {
+                            interfaz.printText("Código de Fuente de Poder inválido. Por favor, seleccione un código válido.");
+                            return;
+                        }
+                    } else {
+                        interfaz.printText("Código de Tarjeta Madre inválido. Por favor, seleccione un código válido.");
+                        return;
+                    }
+                } else {
+                    interfaz.printText("Código de tarjeta de video inválido. Por favor, seleccione un código válido.");
+                    return;
+                }
+            } else {
+                interfaz.printText("Código de procesador inválido. Por favor, seleccione un código válido.");
+                return;
+            }
+
+
+        } else if (selectedComponentIndex < famillyList.size() + expecificFamillyList.size()) {
+            ExpecificFamilly selectedExpecificFamilly = expecificFamillyList.get(selectedComponentIndex - famillyList.size());
+            List<Product> familiProduct = selectedExpecificFamilly.getProductList();
+            interfaz.printText("Seleccione un procesador:");
+            for (Product producto : familiProduct) {
+                if (producto.getProductType().equals("Procesador")) {
+                    interfaz.printText(" Nombre: " + producto.getName() + " ID: " + producto.getCode());
+                }
+            }
+
+            interfaz.printText("Ingrese el código del procesador seleccionado:");
+            int selectedProcessorCode = Integer.parseInt(interfaz.readText());
+            Product selectedProcessor = null;
+            for (Product producto : familiProduct) {
+                if (producto.getProductType().equals("Procesador") && producto.getCode() == selectedProcessorCode) {
+                    selectedProcessor = producto;
+                    break;
+                }
+            }
+            if (selectedProcessor != null) {
+                interfaz.printText("Seleccione una tarjeta de video:");
+                for (Product producto : familiProduct) {
+                    if (producto.getProductType().equals("Tarjeta de video.")) {
+                        interfaz.printText(" Nombre: " + producto.getName() + " ID: " + producto.getCode());
+                    }
+                }
+
+                interfaz.printText("Ingrese el código de la tarjeta de video seleccionada:");
+                int selectedGraphicsCardCode = Integer.parseInt(interfaz.readText());
+
+                Product selectedGraphicsCard = null;
+                for (Product producto : familiProduct) {
+                    if (producto.getProductType().equals("Tarjeta de video.") && producto.getCode() == selectedGraphicsCardCode) {
+                        selectedGraphicsCard = producto;
+                        break;
+                    }
+                }
+                if (selectedGraphicsCard != null) {
+                    interfaz.printText("Seleccione una Tarjeta Madre:");
+                    for (Product producto : familiProduct) {
+                        if (producto.getProductType().equals("Tarjeta Madre")) {
+                            interfaz.printText("Nombre: " + producto.getName() + " ID: " + producto.getCode());
+                        }
+                    }
+
+                    interfaz.printText("Ingrese el código de la Tarjeta Madre seleccionada:");
+                    int selectedMotherboardCode = Integer.parseInt(interfaz.readText());
+
+                    Product selectedMotherboard = null;
+                    for (Product producto : familiProduct) {
+                        if (producto.getProductType().equals("Tarjeta Madre") && producto.getCode() == selectedMotherboardCode) {
+                            selectedMotherboard = producto;
+                            break;
+                        }
+                    }
+                    if (selectedMotherboard != null) {
+                        interfaz.printText("Seleccione una Fuente de Poder:");
+                        for (Product producto : familiProduct) {
+                            if (producto.getProductType().equals("Fuente de poder")) {
+                                interfaz.printText("Nombre: " + producto.getName() + " ID: " + producto.getCode());
+                            }
+                        }
+
+                        interfaz.printText("Ingrese el código de la Fuente de Poder seleccionada:");
+                        int selectedPowerSupplyCode = Integer.parseInt(interfaz.readText());
+
+                        Product selectedPowerSupply = null;
+                        for (Product producto : familiProduct) {
+                            if (producto.getProductType().equals("Fuente de poder") && producto.getCode() == selectedPowerSupplyCode) {
+                                selectedPowerSupply = producto;
+                                break;
+                            }
+                        }
+                        if (selectedPowerSupply != null) {
+                            List<Ram> familiRam = selectedExpecificFamilly.getRamProductList();
+                            interfaz.printText("Seleccione una RAM:");
+                            for (Ram ram : familiRam) {
+                                interfaz.printText("Nombre: " + ram.getName() + " ID: " + ram.getCode());
+                            }
+
+                            interfaz.printText("Ingrese el código de la RAM seleccionada:");
+                            int selectedRamCode = Integer.parseInt(interfaz.readText());
+
+                            Ram selectedRam = null;
+                            for (Ram ram : familiRam) {
+                                if (ram.getCode() == selectedRamCode) {
+                                    selectedRam = ram;
+                                    break;
+                                }
+                            }
+
+                            if (selectedRam != null) {
+                                List<Storage> familiStorage = selectedExpecificFamilly.getStorageList();
+                                interfaz.printText("Seleccione un Almacenamiento:");
+                                for (Storage storage : familiStorage) {
+                                    interfaz.printText("Nombre: " + storage.getName() + " ID: " + storage.getCode());
+                                }
+
+                                interfaz.printText("Ingrese el código del Almacenamiento seleccionado:");
+                                int selectedStorageCode = Integer.parseInt(interfaz.readText());
+
+                                Storage selectedStorage = null;
+                                for (Storage storage : familiStorage) {
+                                    if (storage.getCode() == selectedStorageCode) {
+                                        selectedStorage = storage;
+                                        break;
+                                    }
+                                }
+
+                                if (selectedStorage != null) {
+                                    interfaz.printText("Desea realizar la compra de una PC con los siguientes componentes:");
+                                    interfaz.printText("Procesador: " + selectedProcessor.getName() + " Precio: " + selectedProcessor.getPrice());
+                                    interfaz.printText("Tarjeta de Video: " + selectedGraphicsCard.getName() + " Precio: " + selectedGraphicsCard.getPrice());
+                                    interfaz.printText("Tarjeta Madre: " + selectedMotherboard.getName() + " Precio: " + selectedMotherboard.getPrice());
+                                    interfaz.printText("Fuente de Poder: " + selectedPowerSupply.getName() + " Precio: " + selectedPowerSupply.getPrice());
+                                    interfaz.printText("RAM: " + selectedRam.getName() + " Precio: " + selectedRam.getPrice());
+                                    interfaz.printText("Almacenamiento: " + selectedStorage.getName() + " Precio: " + selectedStorage.getPrice());
+                                    float TotalPrice = selectedRam.getPrice() + selectedMotherboard.getPrice() + selectedProcessor.getPrice() + selectedStorage.getPrice() + selectedPowerSupply.getPrice() + selectedGraphicsCard.getPrice();
+                                    interfaz.printText("Precio total: " + TotalPrice);
+                                    interfaz.printText("");
+                                    interfaz.printText("Confirmar la compra (S/N):");
+                                    String confirmacionCompra = interfaz.readText().toUpperCase();
+
+                                    if (confirmacionCompra.equals("S")) {
+                                        interfaz.printText("Por favor, ingrese a nombre de quien sera la factura:");
+                                        String clientName = interfaz.readText();
+
+                                        interfaz.printText("Por favor, ingrese el apellido  de " + clientName);
+                                        String clientLastName = interfaz.readText();
+
+                                        interfaz.printText("Por favor, ingrese el numero de telefono de " + clientName + " " + clientLastName);
+                                        String clientPhoneNumber = interfaz.readText();
+                                        int billNumber = billGestor.generateUniqueBillNumber();
+                                        interfaz.printText("PASO EL RANDOM! " );
+                                        billGestor.createBill(new Bill(billNumber, clientName, clientLastName, clientPhoneNumber, selectedRam.getName(), selectedProcessor.getName(), selectedStorage.getName(), selectedPowerSupply.getName(), selectedMotherboard.getName(), selectedGraphicsCard.getName(), TotalPrice));
+                                        interfaz.printText("Compra realizada con éxito. ¡Gracias por su compra! el numero de su factura es: " + billNumber);
+                                    } else if (confirmacionCompra.equals("N")) {
+                                        interfaz.printText("Compra cancelada.");
+                                    } else {
+                                        interfaz.printText("Respuesta no válida. Por favor, responda S para confirmar o N para cancelar.");
+                                    }
+                                } else {
+                                    interfaz.printText("Código de Almacenamiento inválido. Por favor, seleccione un código válido para la familia seleccionada.");
+                                    return;
+                                }
+                            } else {
+                                interfaz.printText("Código de RAM inválido. Por favor, seleccione un código válido para la familia seleccionada.");
+                                return;
+                            }
+                        } else {
+                            interfaz.printText("Código de Fuente de Poder inválido. Por favor, seleccione un código válido para la familia seleccionada.");
+                            return;
+                        }
+                    } else {
+                        interfaz.printText("Código de Tarjeta Madre inválido. Por favor, seleccione un código válido para la familia seleccionada.");
+                        return;
+                    }
+                } else {
+                    interfaz.printText("Código de tarjeta de video inválido. Por favor, seleccione un código válido para la familia seleccionada.");
+                    return;
+                }
+            } else {
+                interfaz.printText("Código de procesador inválido. Por favor, seleccione un código válido para la familia seleccionada.");
+                return;
+            }
+        }
+    }
+    public static void showBillClient(UI interfaz) throws Exception {
+        interfaz.printText("Ingrese el numero de su factura.");
+        int billNumber = interfaz.optionReader();
+
+        try {
+            Bill factura = billGestor.getBillByNumber(billNumber);
+
+            if (factura != null) {
+                interfaz.printText("Factura encontrada:");
+                interfaz.printText("Número de factura: " + factura.getBillNumber());
+                interfaz.printText("Fecha: " + factura.getDate());
+                interfaz.printText("Nombre: " + factura.getName());
+                interfaz.printText("Apellido: " + factura.getLastName());
+                interfaz.printText("Teléfono: " + factura.getPhoneNumber());
+                interfaz.printText("--------------------------------------");
+                interfaz.printText("Productos comprados: ");
+                interfaz.printText("RAM: " + factura.getRam());
+                interfaz.printText("Procesador: " + factura.getProcessor());
+                interfaz.printText("Almacenamiento: " + factura.getStorage());
+                interfaz.printText("Fuente de Poder: " + factura.getPowerSupply());
+                interfaz.printText("Placa Base: " + factura.getMotherboard());
+                interfaz.printText("Tarjeta de Video: " + factura.getVideoCard());
+                interfaz.printText("--------------------------------------");
+                interfaz.printText("Precio Total: " + factura.getPrice());
+                interfaz.printText("");
+            } else {
+                interfaz.printText("La factura con el número " + billNumber + " no fue encontrada.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void showAllBills(UI interfaz) {
+        try {
+            List<Bill> facturas = billGestor.showBills();
+
+            if (!facturas.isEmpty()) {
+                interfaz.printText("Lista de facturas:");
+                for (Bill factura : facturas) {
+                    interfaz.printText("Número de factura: " + factura.getBillNumber());
+                    interfaz.printText("Fecha: " + factura.getDate());
+                    interfaz.printText("Nombre: " + factura.getName());
+                    interfaz.printText("Apellido: " + factura.getLastName());
+                    interfaz.printText("Teléfono: " + factura.getPhoneNumber());
+                    interfaz.printText("--------------------------------------");
+                    interfaz.printText("Productos comprados: ");
+                    interfaz.printText("RAM: " + factura.getRam());
+                    interfaz.printText("Procesador: " + factura.getProcessor());
+                    interfaz.printText("Almacenamiento: " + factura.getStorage());
+                    interfaz.printText("Fuente de Poder: " + factura.getPowerSupply());
+                    interfaz.printText("Placa Base: " + factura.getMotherboard());
+                    interfaz.printText("Tarjeta de Video: " + factura.getVideoCard());
+                    interfaz.printText("--------------------------------------");
+                    interfaz.printText("Precio Total: " + factura.getPrice());
+                    interfaz.printText("");
+
+                }
+            } else {
+                interfaz.printText("No hay facturas registradas.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

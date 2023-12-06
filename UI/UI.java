@@ -17,14 +17,17 @@ public class UI {
         System.out.println("7. Eliminar familias.");
         System.out.println("8. Modificar componente.");
         System.out.println("9. Modificar familias.");
-        System.out.println("10. Cerrar sesion.");
+        System.out.println("10. Facturacion.");
+        System.out.println("11. Cerrar sesion.");
         System.out.println("\nIngrese una opcion");
     }
     public void menuClient() {
         System.out.println("Seleccione una opción:");
         System.out.println("1. Listar familias.");
         System.out.println("2. Listar componentes.");
-        System.out.println("3. Cerrar sesion.");
+        System.out.println("3. Armar PC.");
+        System.out.println("4. Ver factura.");
+        System.out.println("5. Cerrar sesion.");
         System.out.println("\nIngrese una opcion");
     }
     public void menuLogin() {
